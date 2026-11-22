@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>plantguard</title>
+    <script>
+      (() => {
+        try {
+          const colorTheme = localStorage.getItem('plantguard-color')
+          if (['forest', 'meadow', 'olive'].includes(colorTheme)) {
+            document.documentElement.dataset.theme = colorTheme
+          } else {
+            document.documentElement.dataset.theme = 'forest'
+          }
+        } catch {
+          document.documentElement.dataset.theme = 'forest'
+        }
+
+        try {
+          const savedTheme = localStorage.getItem('plantguard-theme')
+          const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+          if (savedTheme === 'dark' || (savedTheme !== 'light' && prefersDark)) {
+            document.documentElement.classList.add('dark')
+          }
+        } catch {
+          if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark')
+          }
+        }
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

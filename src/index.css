@@ -1,0 +1,174 @@
+@import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-green-50: var(--brand-50);
+  --color-green-100: var(--brand-100);
+  --color-green-200: var(--brand-200);
+  --color-green-300: var(--brand-300);
+  --color-green-400: var(--brand-400);
+  --color-green-500: var(--brand-500);
+  --color-green-600: var(--brand-600);
+  --color-green-700: var(--brand-700);
+  --color-green-800: var(--brand-800);
+  --color-green-900: var(--brand-900);
+  --color-green-950: var(--brand-950);
+}
+
+:root {
+  --brand-50: #f0fdf4;
+  --brand-100: #dcfce7;
+  --brand-200: #bbf7d0;
+  --brand-300: #86efac;
+  --brand-400: #4ade80;
+  --brand-500: #22c55e;
+  --brand-600: #16a34a;
+  --brand-700: #15803d;
+  --brand-800: #166534;
+  --brand-900: #14532d;
+  --brand-950: #052e16;
+  --confidence-track: var(--brand-100);
+  --color-gray-50: #f5f8f4;
+  --color-gray-100: #eaf0e9;
+  --color-gray-200: #dce6dc;
+  --color-gray-300: #c4d2c5;
+  --color-gray-400: #9daf9f;
+  --color-gray-500: #748a78;
+  --color-gray-600: #586e5d;
+  --color-gray-700: #405745;
+  --color-gray-800: #263d2d;
+  --color-gray-900: #152b1d;
+  --color-gray-950: #0a1b10;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color: var(--brand-950);
+  background: var(--brand-50);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[data-theme="forest"] {
+  --brand-50: #f0fdf4;
+  --brand-100: #dcfce7;
+  --brand-200: #bbf7d0;
+  --brand-300: #86efac;
+  --brand-400: #4ade80;
+  --brand-500: #22c55e;
+  --brand-600: #16a34a;
+  --brand-700: #15803d;
+  --brand-800: #166534;
+  --brand-900: #14532d;
+  --brand-950: #052e16;
+}
+
+[data-theme="meadow"] {
+  --brand-50: #f7faef;
+  --brand-100: #eef4df;
+  --brand-200: #dce9c1;
+  --brand-300: #c4d99b;
+  --brand-400: #a6c76b;
+  --brand-500: #89b64e;
+  --brand-600: #72a63a;
+  --brand-700: #5b872e;
+  --brand-800: #496b28;
+  --brand-900: #3b5624;
+  --brand-950: #263819;
+}
+
+[data-theme="olive"] {
+  --brand-50: #f7f7f2;
+  --brand-100: #edede3;
+  --brand-200: #dcdccc;
+  --brand-300: #c4c4a9;
+  --brand-400: #a7a782;
+  --brand-500: #85856a;
+  --brand-600: #646452;
+  --brand-700: #535344;
+  --brand-800: #454537;
+  --brand-900: #39392e;
+  --brand-950: #25251f;
+}
+
+.dark {
+  --confidence-track: var(--brand-900);
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--brand-50);
+}
+
+html.dark,
+html.dark body {
+  background: var(--brand-950);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html[data-theme],
+html[data-theme] * {
+  transition:
+    background-color 0.3s ease,
+    border-color 0.3s ease,
+    color 0.3s ease;
+}
+
+::selection {
+  color: #f7fff7;
+  background: var(--brand-700);
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+html {
+  scrollbar-color: var(--brand-400) var(--brand-100);
+}
+
+html.dark {
+  scrollbar-color: var(--brand-700) var(--brand-950);
+}
+
+button {
+  font: inherit;
+}
+
+@media print {
+  body:has(.qr-print-card) * {
+    visibility: hidden !important;
+  }
+
+  .qr-print-card,
+  .qr-print-card * {
+    visibility: visible !important;
+  }
+
+  .qr-print-card {
+    position: fixed !important;
+    inset: 0 auto auto 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+    background: #fff !important;
+    box-shadow: none !important;
+    color: #000 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
