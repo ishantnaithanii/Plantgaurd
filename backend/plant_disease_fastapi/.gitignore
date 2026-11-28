@@ -1,0 +1,6 @@
+.venv*/
+__pycache__/
+*.py[cod]
+trained_model.keras
+class_names.json
+plant_model_bundle.zip

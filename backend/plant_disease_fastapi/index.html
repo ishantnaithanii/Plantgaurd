@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PlantLens | Leaf Health Demo</title>
+  <style>
+    :root { color-scheme: light; --ink:#17352d; --muted:#667c73; --green:#247052; --green-dark:#164b38; --pale:#eff6ef; --line:#dce8dc; --white:#fff; --amber:#855c12; }
+    * { box-sizing: border-box; }
+    body { margin:0; background:#f7f9f5; color:var(--ink); font:16px/1.5 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color:var(--green-dark); }
+    .wrap { width:min(1100px, calc(100% - 40px)); margin:auto; }
+    header { padding:22px 0; border-bottom:1px solid var(--line); background:rgba(255,255,255,.8); }
+    .nav { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+    .brand { display:flex; align-items:center; gap:11px; font-weight:750; letter-spacing:-.03em; font-size:1.15rem; }
+    .logo { display:grid; place-items:center; width:38px; height:38px; border-radius:12px; background:#e2f0e4; font-size:21px; }
+    .links { display:flex; gap:20px; font-size:.92rem; color:var(--muted); }
+    .links a { text-decoration:none; }
+    .hero { padding:55px 0 30px; max-width:800px; }
+    .eyebrow { color:var(--green); font-weight:700; text-transform:uppercase; letter-spacing:.12em; font-size:.76rem; }
+    h1 { font-size:clamp(2.1rem,5vw,3.7rem); line-height:1.08; letter-spacing:-.055em; margin:12px 0 14px; }
+    .hero p { color:var(--muted); font-size:1.08rem; max-width:670px; margin:0; }
+    .stats { display:flex; flex-wrap:wrap; gap:10px; margin-top:22px; }
+    .pill { border:1px solid var(--line); border-radius:999px; padding:7px 12px; background:white; font-size:.88rem; }
+    .layout { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:stretch; margin:18px 0 24px; }
+    .card { border:1px solid var(--line); border-radius:20px; background:var(--white); padding:23px; box-shadow:0 8px 30px rgba(24,58,42,.04); }
+    .card h2 { margin:0 0 5px; font-size:1.15rem; letter-spacing:-.02em; }
+    .sub { color:var(--muted); font-size:.91rem; margin:0 0 17px; }
+    .drop { min-height:250px; border:1.5px dashed #b9d0bd; border-radius:16px; background:#f8fbf7; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding:20px; cursor:pointer; transition:.18s ease; overflow:hidden; }
+    .drop:hover,.drop.drag { border-color:var(--green); background:#f0f7ef; }
+    .drop img { display:none; max-width:100%; max-height:220px; border-radius:12px; object-fit:contain; }
+    .upload-icon { font-size:34px; margin-bottom:8px; }
+    .drop strong { margin-bottom:4px; }
+    .drop small { color:var(--muted); }
+    input[type=file] { display:none; }
+    .file-name { color:var(--muted); min-height:22px; margin:8px 0 12px; font-size:.85rem; overflow-wrap:anywhere; }
+    button { border:0; border-radius:11px; background:var(--green); color:white; padding:12px 17px; font:inherit; font-weight:700; cursor:pointer; width:100%; transition:background .16s ease; }
+    button:hover { background:var(--green-dark); }
+    button:disabled { opacity:.55; cursor:wait; }
+    .message { min-height:24px; margin:11px 0 0; color:var(--muted); font-size:.9rem; }
+    .message.error { color:#a43e33; }
+    .placeholder { min-height:312px; display:grid; place-items:center; text-align:center; color:var(--muted); }
+    .placeholder span { display:block; font-size:38px; margin-bottom:8px; }
+    .result { display:none; }
+    .result-top { display:flex; justify-content:space-between; align-items:start; gap:14px; }
+    .result-label { font-size:1.45rem; font-weight:750; letter-spacing:-.03em; line-height:1.2; margin:5px 0 4px; overflow-wrap:anywhere; }
+    .confidence { color:var(--green); font-weight:750; white-space:nowrap; }
+    .result-detail { color:var(--muted); margin:0 0 20px; }
+    .bar-label { display:flex; justify-content:space-between; gap:12px; font-size:.86rem; margin:12px 0 5px; }
+    .bar-track { height:8px; border-radius:99px; background:#e9efe8; overflow:hidden; }
+    .bar { height:100%; border-radius:99px; background:#5d9b6c; }
+    .section-title { font-size:.84rem; font-weight:700; margin:20px 0 8px; }
+    .pipeline { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 46px; }
+    .step { background:var(--pale); border-radius:14px; padding:15px; }
+    .step b { display:block; font-size:.91rem; margin-bottom:3px; }
+    .step span { color:var(--muted); font-size:.84rem; }
+    .notice { background:#fff8e8; border:1px solid #f0dfb6; color:var(--amber); padding:13px 15px; border-radius:12px; font-size:.88rem; margin-bottom:42px; }
+    footer { border-top:1px solid var(--line); padding:20px 0 28px; color:var(--muted); font-size:.86rem; }
+    .health { font-size:.82rem; color:var(--muted); }
+    .health.ready { color:var(--green); }
+    .health.missing { color:var(--amber); }
+    @media(max-width:760px) { .layout { grid-template-columns:1fr; } .placeholder { min-height:180px; } .pipeline { grid-template-columns:1fr; } .hero { padding-top:38px; } }
+    @media(max-width:520px) { .wrap { width:min(100% - 26px, 1100px); } .links { gap:12px; } .card { padding:18px; } .nav { align-items:flex-start; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <div class="brand"><span class="logo" aria-hidden="true">🌿</span> PlantLens</div>
+      <nav class="links" aria-label="Project links">
+        <a href="/docs">API docs</a>
+        <a href="/health">Health</a>
+        <span id="health" class="health">Checking model…</span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Machine learning demo</div>
+      <h1>Check a plant leaf in seconds.</h1>
+      <p>Upload a clear leaf photo. The trained image classifier predicts one of 38 plant disease or healthy-leaf categories.</p>
+      <div class="stats"><span class="pill">TensorFlow / Keras</span><span class="pill">128 × 128 RGB input</span><span class="pill">38 classes</span></div>
+    </section>
+
+    <section class="layout" aria-label="Leaf prediction demo">
+      <div class="card">
+        <h2>Try an image</h2>
+        <p class="sub">Choose a JPG or PNG photo of a single leaf.</p>
+        <label class="drop" id="drop" for="file">
+          <span id="uploadPrompt"><span class="upload-icon">⬆️</span><strong>Choose a leaf image</strong><small>or drag and drop it here · up to 10 MB</small></span>
+          <img id="preview" alt="Selected leaf preview">
+        </label>
+        <input id="file" type="file" accept="image/*">
+        <div id="fileName" class="file-name">No image selected</div>
+        <button id="predict" type="button" disabled>Analyze leaf</button>
+        <p id="message" class="message" aria-live="polite">Select an image to begin.</p>
+      </div>
+
+      <div class="card">
+        <h2>Prediction</h2>
+        <p class="sub">The API response will appear here.</p>
+        <div id="placeholder" class="placeholder"><div><span>🍃</span>Upload a leaf image to see the model result.</div></div>
+        <div id="result" class="result" aria-live="polite">
+          <div class="result-top">
+            <div><div class="eyebrow">Most likely class</div><div id="label" class="result-label"></div></div>
+            <div id="confidence" class="confidence"></div>
+          </div>
+          <p id="detail" class="result-detail"></p>
+          <div class="section-title">Top predictions</div>
+          <div id="top"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="eyebrow" style="margin-bottom:12px">How this project works</div>
+    <section class="pipeline" aria-label="Project pipeline">
+      <div class="step"><b>1. Train</b><span>The notebook trains a CNN on labeled leaf images.</span></div>
+      <div class="step"><b>2. Serve</b><span>FastAPI loads the saved Keras model and class labels.</span></div>
+      <div class="step"><b>3. Predict</b><span>An uploaded image is resized and classified by the API.</span></div>
+    </section>
+    <div class="notice"><strong>Demo note:</strong> This model predicts from its training categories. A confidence score is a model estimate, not a guaranteed diagnosis.</div>
+  </main>
+
+  <footer><div class="wrap">PlantLens · Plant disease classification · <a href="/docs">Open interactive API docs</a></div></footer>
+
+  <script>
+    const input = document.getElementById('file');
+    const drop = document.getElementById('drop');
+    const preview = document.getElementById('preview');
+    const prompt = document.getElementById('uploadPrompt');
+    const fileName = document.getElementById('fileName');
+    const button = document.getElementById('predict');
+    const message = document.getElementById('message');
+    const health = document.getElementById('health');
+    let selectedFile = null;
+    let previewUrl = null;
+
+    function chooseFile(file) {
+      if (!file) return;
+      selectedFile = file;
+      fileName.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+      button.disabled = false;
+      message.textContent = 'Ready to analyze.';
+      message.className = 'message';
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      previewUrl = URL.createObjectURL(file);
+      preview.src = previewUrl;
+      preview.style.display = 'block';
+      prompt.style.display = 'none';
+    }
+
+    input.addEventListener('change', () => chooseFile(input.files[0]));
+    for (const eventName of ['dragenter', 'dragover']) {
+      drop.addEventListener(eventName, (event) => { event.preventDefault(); drop.classList.add('drag'); });
+    }
+    for (const eventName of ['dragleave', 'drop']) {
+      drop.addEventListener(eventName, (event) => { event.preventDefault(); drop.classList.remove('drag'); });
+    }
+    drop.addEventListener('drop', (event) => chooseFile(event.dataTransfer.files[0]));
+
+    function percent(value) { return `${(value * 100).toFixed(1)}%`; }
+    function renderResult(data) {
+      document.getElementById('placeholder').style.display = 'none';
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('label').textContent = data.prediction.replaceAll('___', ' — ');
+      document.getElementById('confidence').textContent = percent(data.confidence);
+      document.getElementById('detail').textContent = [data.crop, data.condition].filter(Boolean).join(' · ');
+      document.getElementById('top').innerHTML = '';
+      for (const item of data.top_predictions) {
+        const row = document.createElement('div');
+        row.innerHTML = `<div class="bar-label"><span></span><strong></strong></div><div class="bar-track"><div class="bar"></div></div>`;
+        row.querySelector('.bar-label span').textContent = item.label.replaceAll('___', ' — ');
+        row.querySelector('.bar-label strong').textContent = percent(item.confidence);
+        row.querySelector('.bar').style.width = `${Math.min(100, item.confidence * 100)}%`;
+        document.getElementById('top').appendChild(row);
+      }
+    }
+
+    button.addEventListener('click', async () => {
+      if (!selectedFile) return;
+      button.disabled = true;
+      button.textContent = 'Analyzing…';
+      message.textContent = 'Sending the image to the model…';
+      message.className = 'message';
+      const form = new FormData();
+      form.append('file', selectedFile);
+      try {
+        const response = await fetch('/predict', { method: 'POST', body: form });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'Prediction failed.');
+        renderResult(data);
+        message.textContent = 'Prediction complete.';
+      } catch (error) {
+        message.textContent = error.message || 'Could not reach the API.';
+        message.className = 'message error';
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Analyze leaf';
+      }
+    });
+
+    fetch('/health').then((response) => response.json()).then((data) => {
+      if (data.model_loaded) {
+        health.textContent = 'Model ready';
+        health.classList.add('ready');
+      } else {
+        health.textContent = 'Model files needed';
+        health.classList.add('missing');
+      }
+    }).catch(() => { health.textContent = 'API unavailable'; health.classList.add('missing'); });
+  </script>
+</body>
+</html>
